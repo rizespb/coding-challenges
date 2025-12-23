@@ -1,0 +1,10 @@
+/The Complete JavaScript Course ver 1/
+/complete-javascript-course-master-CODE/
+**/node_modules/
+**/.parcel-cache/
+*.tmp
+
+__pycache__
+.mypy_cache
+
+

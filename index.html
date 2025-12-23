@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- <script defer src="script.js"></script> -->
+  <script defer type="module" src="script.js"></script>
+  <script defer type="module" src="script1.js"></script>
+  <!-- <script defer type="module" src="script2.js"></script>
+  <script defer src="scriptTs.js"></script> -->
+  <title>Asynchronous JavaScript</title>
+</head>
+
+<body>
+  <main class="container">
+    <form class="currency-convertor">
+      <div class="currency-convertor__input-block">
+        <select name="currency-list" id="#input-currancy" class="currency-convertor__currency-input">
+          <option class="currency-convertor__currency-option--hidden">
+            Choose input currancy
+          </option>
+          <option value="eur" selected>EUR</option>
+          <option value="rub">RUB</option>
+          <option value="usd">USD</option>
+        </select>
+        <input type="text" class="currency-convertor__currency-input-value" placeholder="Please, unput value" />
+      </div>
+      <select name="currency-list" id="#input-currancy" class="currency-convertor__currency-output">
+        <option class="currency-convertor__currency-option--hidden">
+          Choose output currancy
+        </option>
+        <option value="eur">EUR</option>
+        <option value="rub" selected>RUB</option>
+        <option value="usd">USD</option>
+      </select>
+      <button>Enter</button>
+
+      <div class="currency-convertor__output">Result</div>
+    </form>
+  </main>
+
+  <div class="wrapper">
+    <div class="inner">1</div>
+    <div class="inner">2</div>
+    <div class="inner">3</div>
+  </div>
+</body>
+
+</html>
