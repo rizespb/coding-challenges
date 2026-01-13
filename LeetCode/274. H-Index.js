@@ -1,4 +1,6 @@
-const { test } = require('./test');
+// https://leetcode.com/problems/h-index/description/
+
+const { test } = require('../test');
 
 const hIndex = (citations) => {
   citations.sort((a, b) => b - a);
