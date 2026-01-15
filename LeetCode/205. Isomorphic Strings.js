@@ -1,4 +1,5 @@
-const { test } = require('./test');
+// https://leetcode.com/problems/isomorphic-strings/description
+const { test } = require('../test');
 
 const isIsomorphic = (s, t) => {
   if (s.length !== t.length) return false;

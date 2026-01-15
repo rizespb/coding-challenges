@@ -1,3 +1,4 @@
+# https://leetcode.com/problems/isomorphic-strings/description
 from test import test
 
 
@@ -9,7 +10,7 @@ class Solution:
         chars_map: dict[str, str] = {}
         back_map: dict[str, str] = {}
 
-        for index in range(len(s)):
+        for index in range(len(s)):  # pylint: disable=consider-using-enumerate
             s_char = s[index]
             t_char = t[index]
 
