@@ -1,5 +1,4 @@
-from test import test
-from typing import Literal
+# https://leetcode.com/problems/sum-root-to-leaf-numbers/description/
 
 
 class TreeNode:
@@ -20,11 +19,3 @@ class Solution:
         return self.sumNumbers(
             node.left, current_sum + str(node.val)
         ) + self.sumNumbers(node.right, current_sum + str(node.val))
-
-
-# test(buildTree, [
-#   {
-#     "input": [],
-#     "expected": 1,
-#   },
-# ])

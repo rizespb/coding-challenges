@@ -1,47 +1,56 @@
 const { test } = require('./test');
 
-const isIsomorphic = (s, t) => {
-  if (s.length !== t.length) return false;
+// Пример для 7:
+// 7 * 7 = 49
+// 4*4 + 9*9 = 97
+// 9*9 + 7*7 = 130
+// 1*1 + 3*3 + 0*0 = 10
+// 1*1 + 0*0 = 1
+const isHappy = (num) => {
+  const hash = {};
 
-  const map = {};
-  const usedChars = new Set();
+  let current = num;
 
-  for (let i = 0; i < s.length; i++) {
-    if (map[s[i]] && map[s[i]] !== t[i]) {
+  while (true) {
+    // Если число равно 1, то оно счастливое
+    if (current === 1) {
+      return true;
+    }
+
+    // Если мы раньше уже раскладывали это число, то попали в цикл
+    if (current in hash) {
       return false;
     }
 
-    if (map[s[i]]) {
-      continue;
+    // Помещаем текущее число в словарь
+    hash[current] = true;
+
+    // Для подсчета суммы квадратов цифр используем temp
+    let temp = current;
+
+    current = 0;
+
+    // Добавляем к сумме квадрат последней цифры
+    while (temp) {
+      current += digit ** 2;
+
+      // Сохраняем в temp без последней цифры
+      temp -= Math.trunc(temp / 10);
     }
-
-    if (usedChars.has(t[i])) {
-      return false;
-    }
-
-    map[s[i]] = t[i];
-
-    usedChars.add(t[i]);
   }
-
-  return true;
 };
 
-test(isIsomorphic, [
+test(isHappy, [
+  // {
+  //   input: [19],
+  //   expected: true,
+  // },
+  // {
+  //   input: [2],
+  //   expected: false,
+  // },
   {
-    input: ['egg', 'add'],
+    input: [7],
     expected: true,
-  },
-  {
-    input: ['foo', 'bar'],
-    expected: false,
-  },
-  {
-    input: ['paper', 'title'],
-    expected: true,
-  },
-  {
-    input: ['badc', 'baba'],
-    expected: false,
   },
 ]);
