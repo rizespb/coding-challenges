@@ -6,6 +6,7 @@ const { test } = require('./test');
 // 9*9 + 7*7 = 130
 // 1*1 + 3*3 + 0*0 = 10
 // 1*1 + 0*0 = 1
+
 const isHappy = (num) => {
   const hash = {};
 
