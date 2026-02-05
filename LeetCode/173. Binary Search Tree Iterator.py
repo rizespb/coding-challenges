@@ -1,5 +1,4 @@
-from test import test
-from typing import Literal
+# https://leetcode.com/problems/binary-search-tree-iterator/description/
 
 
 class TreeNode:
@@ -31,11 +30,3 @@ class BSTIterator:
         self.stack.append(node)
 
         self.traverseLeft(node.left)
-
-
-# test(buildTree, [
-#   {
-#     "input": [],
-#     "expected": 1,
-#   },
-# ])

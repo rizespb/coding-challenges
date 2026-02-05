@@ -310,6 +310,16 @@ console.log(asd); // [1]
 console.log(bat); // {bat: 3}
 
 // --------------- 2 ---------------
+// Что будет выведено в консоль и почему?
+const {
+  foo: [bar],
+  bar: foo,
+} = { foo: [1], bar: [{ baz: 3 }] };
+
+console.log(foo); //
+console.log(bar); //
+
+// --------------- 3 ---------------
 // Деструктурирующее присваивание в параметрах функции
 const input = [
   { expired: false, order: 4, value: 'abcd' },

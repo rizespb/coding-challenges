@@ -1,4 +1,4 @@
-const { test } = require('./test');
+// https://leetcode.com/problems/binary-search-tree-iterator/description/
 
 function TreeNode(val, left, right) {
   this.val = val === undefined ? 0 : val;
@@ -31,10 +31,3 @@ class BSTIterator {
     return this.stack.length > 0;
   }
 }
-
-// test(isHappy, [
-//   {
-//     input: [7],
-//     expected: true,
-//   },
-// ]);
