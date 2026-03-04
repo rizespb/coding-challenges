@@ -1,4 +1,6 @@
-const { test } = require('./test');
+// https://leetcode.com/problems/surrounded-regions/description/
+
+const { test } = require('../test');
 
 // В решении на Python используется более оптимальный алгоритм
 const solve = (board) => {
