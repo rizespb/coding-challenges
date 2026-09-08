@@ -2,105 +2,50 @@ from test import test
 
 
 class Solution:
-    def solve(self, board: list[list[str]]) -> None:
-        max_x = len(board[0]) - 1
-        max_y = len(board) - 1
+    def search(self, nums: list[int], target: int) -> int:
+        left = 0
+        right = len(nums) - 1
 
-        # dfs будем использовать только для нахождения пограничных регионов
-        # Если ячейка является частью пограничного региона - записываем в нее edge
-        def dfs(x, y) -> None:
-            if any([x < 0, x > max_x, y < 0, y > max_y]):
-                return
+        while left <= right:
+            pivot_index = int((left + right) // 2)
+            pivot = nums[pivot_index]
 
-            if board[y][x] != "O":
-                return
+            if target == pivot:
+                return pivot_index
 
-            board[y][x] = "edge"
+            is_pivot_in_left = pivot >= nums[left]
 
-            dfs(x + 1, y)
-            dfs(x - 1, y)
-            dfs(x, y + 1)
-            dfs(x, y - 1)
+            if is_pivot_in_left:
+                if nums[left] <= target < pivot:
+                    right = pivot_index - 1
+                else:
+                    left = pivot_index + 1
+            else:
+                if pivot < target <= nums[right]:
+                    left = pivot_index + 1
+                else:
+                    right = pivot_index - 1
 
-        # Ищем пограничные регионы в первом и последнем столбцах
-        for index_y in range(max_y + 1):
-            if board[index_y][0] == "O":
-                dfs(0, index_y)
-            if board[index_y][max_x] == "O":
-                dfs(max_x, index_y)
-
-        # Ищем пограничные регионы в первой и последней колонках
-        for index_x in range(max_x + 1):
-            if board[0][index_x] == "O":
-                dfs(index_x, 0)
-            if board[max_y][index_x] == "O":
-                dfs(index_x, max_y)
-
-        # Все ячейки с edge относятся к пограничным регионам. Меняем в них edge на O
-        # Все остальные ячейки с O - части внутренних регионов. Меняем в них O на X
-        for index_y in range(max_y + 1):
-            for index_x in range(max_x + 1):
-                if board[index_y][index_x] == "O":
-                    board[index_y][index_x] = "X"
-
-                if board[index_y][index_x] == "edge":
-                    board[index_y][index_x] = "O"
+        return -1
 
 
 solution = Solution()
 
+
 test(
-    solution.solve,
+    solution.search,
     [
         {
-            "input": [
-                [
-                    ["X", "X", "X", "X"],
-                    ["X", "O", "O", "X"],
-                    ["X", "X", "O", "X"],
-                    ["X", "O", "X", "X"],
-                ],
-            ],
-            "expected": [
-                ["X", "X", "X", "X"],
-                ["X", "X", "X", "X"],
-                ["X", "X", "X", "X"],
-                ["X", "O", "X", "X"],
-            ],
+            "input": [[4, 5, 6, 7, 0, 1, 2], 0],
+            "expected": 4,
         },
         {
-            "input": [
-                [
-                    ["O", "O"],
-                    ["O", "O"],
-                ],
-            ],
-            "expected": [
-                ["O", "O"],
-                ["O", "O"],
-            ],
+            "input": [[4, 5, 6, 7, 0, 1, 2], 3],
+            "expected": -1,
         },
         {
-            "input": [
-                [
-                    ["X", "O", "X", "O", "O", "O", "O"],
-                    ["X", "O", "O", "O", "O", "O", "O"],
-                    ["X", "O", "O", "O", "O", "X", "O"],
-                    ["O", "O", "O", "O", "X", "O", "X"],
-                    ["O", "X", "O", "O", "O", "O", "O"],
-                    ["O", "O", "O", "O", "O", "O", "O"],
-                    ["O", "X", "O", "O", "O", "O", "O"],
-                ],
-            ],
-            "expected": [
-                ["X", "O", "X", "O", "O", "O", "O"],
-                ["X", "O", "O", "O", "O", "O", "O"],
-                ["X", "O", "O", "O", "O", "X", "O"],
-                ["O", "O", "O", "O", "X", "O", "X"],
-                ["O", "X", "O", "O", "O", "O", "O"],
-                ["O", "O", "O", "O", "O", "O", "O"],
-                ["O", "X", "O", "O", "O", "O", "O"],
-            ],
+            "input": [[1], 0],
+            "expected": -1,
         },
     ],
 )
