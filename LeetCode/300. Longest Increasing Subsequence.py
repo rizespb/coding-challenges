@@ -3,26 +3,42 @@
 from test import test
 
 
+# class Solution:
+#     def lengthOfLIS(self, nums: list[int]) -> int:
+#         length = len(nums)
+
+#         dp: list[int] = [0] * length
+#         dp[length - 1] = 1
+
+#         for x in range(length - 1, -1, -1):
+#             current = nums[x]
+
+#             max_length = 1
+
+#             for y in range(x, length):
+#                 if current < nums[y]:
+#                     possible_max_length = dp[y] + 1
+#                     max_length = max(max_length, possible_max_length)
+
+#             dp[x] = max_length
+
+#         return max(dp)
+
+
 class Solution:
     def lengthOfLIS(self, nums: list[int]) -> int:
-        length = len(nums)
+        dp = [1] * len(nums)
 
-        dp: list[int] = [0] * length
-        dp[length - 1] = 1
+        max_subsequence = 1
 
-        for x in range(length - 1, -1, -1):
-            current = nums[x]
+        for index in range(1, len(nums)):
+            for inner_index in range(0, index):
+                if nums[index] > nums[inner_index]:
+                    dp[index] = max(dp[index], dp[inner_index] + 1)
 
-            max_length = 1
+            max_subsequence = max(max_subsequence, dp[index])
 
-            for y in range(x, length):
-                if current < nums[y]:
-                    possible_max_length = dp[y] + 1
-                    max_length = max(max_length, possible_max_length)
-
-            dp[x] = max_length
-
-        return max(dp)
+        return max_subsequence
 
 
 solution = Solution()

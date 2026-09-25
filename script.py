@@ -2,50 +2,38 @@ from test import test
 
 
 class Solution:
-    def search(self, nums: list[int], target: int) -> int:
-        left = 0
-        right = len(nums) - 1
+    def lengthOfLIS(self, nums: list[int]) -> int:
+        dp = [1] * len(nums)
 
-        while left <= right:
-            pivot_index = int((left + right) // 2)
-            pivot = nums[pivot_index]
+        max_subsequence = 1
 
-            if target == pivot:
-                return pivot_index
+        for index in range(1, len(nums)):
+            for inner_index in range(0, index):
+                if nums[index] > nums[inner_index]:
+                    dp[index] = max(dp[index], dp[inner_index] + 1)
 
-            is_pivot_in_left = pivot >= nums[left]
+            max_subsequence = max(max_subsequence, dp[index])
 
-            if is_pivot_in_left:
-                if nums[left] <= target < pivot:
-                    right = pivot_index - 1
-                else:
-                    left = pivot_index + 1
-            else:
-                if pivot < target <= nums[right]:
-                    left = pivot_index + 1
-                else:
-                    right = pivot_index - 1
-
-        return -1
+        return max_subsequence
 
 
 solution = Solution()
 
 
 test(
-    solution.search,
+    solution.lengthOfLIS,
     [
         {
-            "input": [[4, 5, 6, 7, 0, 1, 2], 0],
+            "input": [[10, 9, 2, 5, 3, 7, 101, 18]],
             "expected": 4,
         },
         {
-            "input": [[4, 5, 6, 7, 0, 1, 2], 3],
-            "expected": -1,
+            "input": [[0, 1, 0, 3, 2, 3]],
+            "expected": 4,
         },
         {
-            "input": [[1], 0],
-            "expected": -1,
+            "input": [[7, 7, 7, 7, 7, 7, 7]],
+            "expected": 1,
         },
     ],
 )

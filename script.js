@@ -1,46 +1,97 @@
-const { test } = require('./test');
+// const { test } = require('./test');
 
-const search = (nums, target) => {
-  let left = 0;
-  let right = nums.length - 1;
+// const lengthOfLIS = (nums) => {
+//   const dp = Array.from({ length: nums.length });
 
-  while (left <= right) {
-    const pivotIndex = Math.floor((right + left) / 2);
-    const pivot = nums[pivotIndex];
+//   dp[0] = 1;
 
-    if (pivot === target) return pivotIndex;
+//   let max = 1;
 
-    const isPivotInLeft = pivot >= nums[left];
+//   for (let index = 1; index < nums.length; index++) {
+//     dp[index] = 1;
 
-    if (isPivotInLeft) {
-      if (target >= nums[left] && target < pivot) {
-        right = pivotIndex - 1;
-      } else {
-        left = pivotIndex + 1;
-      }
-    } else {
-      if (target > pivot && target <= nums[right]) {
-        left = pivotIndex + 1;
-      } else {
-        right = pivotIndex - 1;
-      }
-    }
-  }
+//     for (let inner = 0; inner < index; inner++) {
+//       if (nums[index] > nums[inner]) {
+//         dp[index] = Math.max(dp[index], dp[inner] + 1);
+//       }
+//     }
 
-  return -1;
+//     max = Math.max(max, dp[index]);
+//   }
+
+//   return max;
+// };
+
+// test(lengthOfLIS, [
+//   {
+//     input: [[10, 9, 2, 5, 3, 7, 101, 18]],
+//     expected: 4,
+//   },
+//   {
+//     input: [[0, 1, 0, 3, 2, 3]],
+//     expected: 4,
+//   },
+//   {
+//     input: [[7, 7, 7, 7, 7, 7, 7]],
+//     expected: 1,
+//   },
+// ]);
+
+/**
+ * @param {Array<() => Promise<any>>} functions - Массив функций, возвращающих промисы
+ * @param {number} limit - Максимальное количество одновременно активных промисов
+ * @returns {Promise<Array<any>>} - Промис с результатами всех функций
+ */
+// function poolRequests(functions, limit) {
+//   return new Promise((resolve) => {
+//     let countFn = 0;
+
+//     const results = [];
+//     let countResults = 0;
+
+//     const handler = (result, index) => {
+//       results[index] = result;
+//       countResults++;
+
+//       if (countResults === functions.length) {
+//         resolve(results);
+
+//         return;
+//       }
+
+//       if (countFn < functions.length) {
+//         const index = countFn;
+
+//         functions[countFn]()
+//           .then((result) => handler(result, index))
+//           .catch((result) => handler(result, index));
+//         countFn++;
+//       }
+//     };
+
+//     while (countFn < limit) {
+//       const index = countFn;
+
+//       functions[countFn]()
+//         .then((result) => handler(result, index))
+//         .catch((result) => handler(result, index));
+
+//       countFn++;
+//     }
+//   });
+// }
+
+const parent = {
+  health: 100,
+  takeDamage() {
+    this.health -= 10;
+  },
 };
 
-test(search, [
-  {
-    input: [[4, 5, 6, 7, 0, 1, 2], 0],
-    expected: 4,
-  },
-  {
-    input: [[4, 5, 6, 7, 0, 1, 2], 3],
-    expected: -1,
-  },
-  {
-    input: [[1], 0],
-    expected: -1,
-  },
-]);
+const child = Object.create(parent);
+
+child.takeDamage();
+
+console.log('child.health:', child.health); // 90
+console.log('parent.health:', parent.health); // 90
+console.log('hasOwnProperty health:', child.hasOwnProperty('health')); // false

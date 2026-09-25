@@ -2,29 +2,51 @@
 
 const { test } = require('../test');
 
+// const lengthOfLIS = (nums) => {
+//   const dp = Array.from({ length: nums.length });
+
+//   dp[nums.length - 1] = 1;
+
+//   let minIndex = nums.length - 1;
+
+//   for (let i = nums.length - 2; i >= 0; i--) {
+//     const current = nums[i];
+
+//     let maxLength = 1;
+
+//     for (let j = i; j < nums.length; j++) {
+//       if (current < nums[j]) {
+//         const possibleLength = dp[j] + 1;
+//         maxLength = Math.max(maxLength, possibleLength);
+//       }
+//     }
+
+//     dp[i] = maxLength;
+//   }
+
+//   return Math.max(...dp);
+// };
+
 const lengthOfLIS = (nums) => {
   const dp = Array.from({ length: nums.length });
 
-  dp[nums.length - 1] = 1;
+  dp[0] = 1;
 
-  let minIndex = nums.length - 1;
+  let max = 1;
 
-  for (let i = nums.length - 2; i >= 0; i--) {
-    const current = nums[i];
+  for (let index = 1; index < nums.length; index++) {
+    dp[index] = 1;
 
-    let maxLength = 1;
-
-    for (let j = i; j < nums.length; j++) {
-      if (current < nums[j]) {
-        const possibleLength = dp[j] + 1;
-        maxLength = Math.max(maxLength, possibleLength);
+    for (let inner = 0; inner < index; inner++) {
+      if (nums[index] > nums[inner]) {
+        dp[index] = Math.max(dp[index], dp[inner] + 1);
       }
     }
 
-    dp[i] = maxLength;
+    max = Math.max(max, dp[index]);
   }
 
-  return Math.max(...dp);
+  return max;
 };
 
 test(lengthOfLIS, [

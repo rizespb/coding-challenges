@@ -19,6 +19,28 @@ console.log(c.z); //
 c.z = 3;
 console.log(a.z); //
 
+// --------------- 2 ---------------
+// Что будет выведено в консоль и почему?
+
+const parent = {
+  health: 100,
+  takeDamage() {
+    this.health -= 10;
+  },
+};
+
+const child = Object.create(parent);
+
+child.takeDamage();
+
+console.log('child.health:', child.health);
+console.log('parent.health:', parent.health);
+console.log('hasOwnProperty health:', child.hasOwnProperty('health'));
+
+// 90
+// 100
+// true
+
 // -----------------------------------------
 // --------------- ЗАМЫКАНИЕ ---------------
 //------------------------------------------
@@ -172,7 +194,7 @@ console.log(8);
 
 // 2 3 4 8 6 undefined undefined 5 1
 
-// --------------- 4 ---------------
+// --------------- 2 ---------------
 // Что будет выведено в консоль и почему?
 setTimeout(() => {
   console.log(1);
@@ -198,7 +220,7 @@ console.log(5);
 
 // 5 1 3 undefined 2 4
 
-// --------------- 5 ---------------
+// --------------- 3 ---------------
 // Что будет выведено в консоль и почему?
 setTimeout(function timeout() {
   console.log('Таймаут');
@@ -232,5 +254,32 @@ console.log('Конец скрипта');
 
 // Создание промиса 10 Конец скрипта 1 2 undefined 3 Таймаут
 
-// --------------- 5 ---------------
-// Задача на промисы и замыкание
+// --------------- 4 ---------------
+// Что будет выведено в консоль и почему?
+
+async function first() {
+  console.log(1);
+  await second();
+  console.log(2);
+}
+
+async function second() {
+  console.log(3);
+}
+
+console.log(4);
+
+setTimeout(() => console.log(5), 0);
+
+first();
+
+new Promise((resolve) => {
+  console.log(6);
+  resolve();
+}).then(() => {
+  console.log(7);
+});
+
+console.log(8);
+
+// 4 1 3 6 8 2 7 5
