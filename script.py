@@ -2,38 +2,62 @@ from test import test
 
 
 class Solution:
-    def lengthOfLIS(self, nums: list[int]) -> int:
-        dp = [1] * len(nums)
+    def permute(self, nums: list[int]) -> list[list[int]]:
+        result: list[list[int]] = []
 
-        max_subsequence = 1
+        nums_amount = len(nums)
 
-        for index in range(1, len(nums)):
-            for inner_index in range(0, index):
-                if nums[index] > nums[inner_index]:
-                    dp[index] = max(dp[index], dp[inner_index] + 1)
+        visited: list[bool] = [False] * nums_amount
+        current_list: list[int] = []
 
-            max_subsequence = max(max_subsequence, dp[index])
+        def inner() -> None:
+            if len(current_list) == nums_amount:
+                result.append(current_list.copy())
 
-        return max_subsequence
+            for index in range(nums_amount):
+                if visited[index]:
+                    continue
+
+                visited[index] = True
+                current_list.append(nums[index])
+
+                inner()
+
+                visited[index] = False
+                current_list.pop()
+
+        inner()
+
+        return result
 
 
 solution = Solution()
 
 
 test(
-    solution.lengthOfLIS,
+    solution.permute,
     [
         {
-            "input": [[10, 9, 2, 5, 3, 7, 101, 18]],
-            "expected": 4,
+            "input": [[1, 2, 3]],
+            "expected": [
+                [1, 2, 3],
+                [1, 3, 2],
+                [2, 1, 3],
+                [2, 3, 1],
+                [3, 1, 2],
+                [3, 2, 1],
+            ],
         },
         {
-            "input": [[0, 1, 0, 3, 2, 3]],
-            "expected": 4,
+            "input": [[0, 1]],
+            "expected": [
+                [0, 1],
+                [1, 0],
+            ],
         },
         {
-            "input": [[7, 7, 7, 7, 7, 7, 7]],
-            "expected": 1,
+            "input": [[1]],
+            "expected": [[1]],
         },
     ],
 )

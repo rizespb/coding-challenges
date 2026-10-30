@@ -1,97 +1,59 @@
-// const { test } = require('./test');
+const { test } = require('./test');
 
-// const lengthOfLIS = (nums) => {
-//   const dp = Array.from({ length: nums.length });
+const permute = (nums) => {
+  const visited = Array(nums.length).fill(false);
 
-//   dp[0] = 1;
+  const result = [];
 
-//   let max = 1;
+  const currentArray = [];
 
-//   for (let index = 1; index < nums.length; index++) {
-//     dp[index] = 1;
+  const inner = () => {
+    if (currentArray.length === nums.length) {
+      result.push([...currentArray]);
 
-//     for (let inner = 0; inner < index; inner++) {
-//       if (nums[index] > nums[inner]) {
-//         dp[index] = Math.max(dp[index], dp[inner] + 1);
-//       }
-//     }
+      return;
+    }
 
-//     max = Math.max(max, dp[index]);
-//   }
+    for (let index = 0; index < nums.length; index++) {
+      if (visited[index]) continue;
 
-//   return max;
-// };
+      visited[index] = true;
+      currentArray.push(nums[index]);
 
-// test(lengthOfLIS, [
-//   {
-//     input: [[10, 9, 2, 5, 3, 7, 101, 18]],
-//     expected: 4,
-//   },
-//   {
-//     input: [[0, 1, 0, 3, 2, 3]],
-//     expected: 4,
-//   },
-//   {
-//     input: [[7, 7, 7, 7, 7, 7, 7]],
-//     expected: 1,
-//   },
-// ]);
+      inner(currentArray);
 
-/**
- * @param {Array<() => Promise<any>>} functions - Массив функций, возвращающих промисы
- * @param {number} limit - Максимальное количество одновременно активных промисов
- * @returns {Promise<Array<any>>} - Промис с результатами всех функций
- */
-// function poolRequests(functions, limit) {
-//   return new Promise((resolve) => {
-//     let countFn = 0;
+      currentArray.pop();
 
-//     const results = [];
-//     let countResults = 0;
+      visited[index] = false;
+    }
+  };
 
-//     const handler = (result, index) => {
-//       results[index] = result;
-//       countResults++;
+  inner();
 
-//       if (countResults === functions.length) {
-//         resolve(results);
-
-//         return;
-//       }
-
-//       if (countFn < functions.length) {
-//         const index = countFn;
-
-//         functions[countFn]()
-//           .then((result) => handler(result, index))
-//           .catch((result) => handler(result, index));
-//         countFn++;
-//       }
-//     };
-
-//     while (countFn < limit) {
-//       const index = countFn;
-
-//       functions[countFn]()
-//         .then((result) => handler(result, index))
-//         .catch((result) => handler(result, index));
-
-//       countFn++;
-//     }
-//   });
-// }
-
-const parent = {
-  health: 100,
-  takeDamage() {
-    this.health -= 10;
-  },
+  return result;
 };
 
-const child = Object.create(parent);
-
-child.takeDamage();
-
-console.log('child.health:', child.health); // 90
-console.log('parent.health:', parent.health); // 90
-console.log('hasOwnProperty health:', child.hasOwnProperty('health')); // false
+test(permute, [
+  {
+    input: [[1, 2, 3]],
+    expected: [
+      [1, 2, 3],
+      [1, 3, 2],
+      [2, 1, 3],
+      [2, 3, 1],
+      [3, 1, 2],
+      [3, 2, 1],
+    ],
+  },
+  {
+    input: [[0, 1]],
+    expected: [
+      [0, 1],
+      [1, 0],
+    ],
+  },
+  {
+    input: [[1]],
+    expected: [[1]],
+  },
+]);
