@@ -1,59 +1,120 @@
 const { test } = require('./test');
 
-const permute = (nums) => {
-  const visited = Array(nums.length).fill(false);
+class Node {
+  constructor(key, value, prev = null, next = null) {
+    this.key = key;
+    this.value = value;
+    this.prev = prev;
+    this.next = next;
+  }
+}
+class LRUCache {
+  constructor(capacity) {
+    this.capacity = capacity;
+    this.map = {};
+    this.size = 0;
+    this.tail = null;
+    this.head = null;
+  }
 
-  const result = [];
+  get = (key) => {
+    if (!(key in this.map)) return -1;
 
-  const currentArray = [];
+    this.updateList(key);
 
-  const inner = () => {
-    if (currentArray.length === nums.length) {
-      result.push([...currentArray]);
+    return this.map[key].value;
+  };
+
+  put = (key, value) => {
+    if (key in this.map) {
+      this.map[key].value = value;
+      this.updateList(key);
 
       return;
     }
 
-    for (let index = 0; index < nums.length; index++) {
-      if (visited[index]) continue;
+    this.size++;
 
-      visited[index] = true;
-      currentArray.push(nums[index]);
+    const node = new Node(key, value);
+    this.map[key] = node;
 
-      inner(currentArray);
+    if (!this.tail) {
+      this.tail = node;
+      this.head = node;
+    } else {
+      this.head.next = node;
+      node.prev = this.head;
+      this.head = node;
+    }
 
-      currentArray.pop();
+    if (this.size > this.capacity) {
+      delete this.map[this.tail.key];
 
-      visited[index] = false;
+      this.tail = this.tail.next;
+      this.tail.prev = null;
+      this.size--;
     }
   };
 
-  inner();
+  updateList = (key) => {
+    const node = this.map[key];
 
-  return result;
+    if (this.size === 1 || this.head === node) return;
+
+    if (this.tail === node) {
+      this.tail = node.next;
+      this.tail.prev = null;
+    } else {
+      node.prev.next = node.next;
+      node.next.prev = node.prev;
+    }
+
+    this.head.next = node;
+    node.prev = this.head;
+    this.head = node;
+    this.head.next = null;
+  };
+}
+
+const print = (cache) => {
+  console.log('/////////////////////////////');
+  console.log('tail', cache.tail);
+  console.log('head', cache.head);
+  console.log('map', cache.map);
 };
 
-test(permute, [
-  {
-    input: [[1, 2, 3]],
-    expected: [
-      [1, 2, 3],
-      [1, 3, 2],
-      [2, 1, 3],
-      [2, 3, 1],
-      [3, 1, 2],
-      [3, 2, 1],
-    ],
-  },
-  {
-    input: [[0, 1]],
-    expected: [
-      [0, 1],
-      [1, 0],
-    ],
-  },
-  {
-    input: [[1]],
-    expected: [[1]],
-  },
-]);
+const cache = new LRUCache(2);
+cache.put(1, 1);
+console.log(cache.map);
+cache.put(2, 2);
+// print(cache);
+console.log(cache.put(3, 3));
+console.log(cache.get(1));
+console.log(cache.get(2));
+console.log(cache.put(3, 333));
+print(cache);
+
+// test(permute, [
+//   {
+//     input: [[1, 2, 3]],
+//     expected: [
+//       [1, 2, 3],
+//       [1, 3, 2],
+//       [2, 1, 3],
+//       [2, 3, 1],
+//       [3, 1, 2],
+//       [3, 2, 1],
+//     ],
+//   },
+//   {
+//     input: [[0, 1]],
+//     expected: [
+//       [0, 1],
+//       [1, 0],
+//     ],
+//   },
+//   {
+//     input: [[1]],
+//     expected: [[1]],
+//   },
+// ]);
