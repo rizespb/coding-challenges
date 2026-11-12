@@ -1,112 +1,58 @@
 from test import test
 
 
-class Node:
-    def __init__(self, key, value, prevNode=None, nextNode=None):
-        self.key = key
-        self.value = value
-        self.prev = prevNode
-        self.next = nextNode
+# Жадный алгоритм: стараемся избавиться в первую очередь от наиболее крупных купюр
+# Покупатели расплачиваются только 5, 10 и 20
+# 20 никогда не будет участвовать в сдаче, поэтому не храним
+class Solution:
 
+    def lemonadeChange(self, bills: list[int]) -> bool:
+        bank: dict[int, int] = {10: 0, 5: 0}
 
-class LRUCache:
+        price = 5
 
-    def __init__(self, capacity: int):
-        self.capacity = capacity
-        self.size = 0
-        self.map = {}  # type: ignore
+        for banknote in bills:
+            if banknote != 20:
+                bank[banknote] += 1
 
-        self.tail = None
-        self.head = None
+            if banknote == price:
+                continue
 
-    def get(self, key: int) -> int:
-        if key not in self.map:
-            return -1
+            rest = banknote - price
 
-        self.update_list(key)
+            for key, value in bank.items():
 
-        return self.map[key].value
+                target_number_of_banknotes = min(rest // key, value)
 
-    def put(self, key: int, value: int) -> None:
-        if key in self.map:
-            self.map[key].value = value
-            self.update_list(key)
+                if target_number_of_banknotes == 0:
+                    continue
 
-            return
+                rest -= key * target_number_of_banknotes
 
-        node = Node(key, value)
+                bank[key] -= target_number_of_banknotes
 
-        self.map[key] = node
+                if rest == 0:
+                    break
 
-        if self.size == 0:
-            self.tail = node  # type: ignore
-            self.head = node  # type: ignore
-        else:
-            self.head.next = node  # type: ignore
-            node.prev = self.head  # type: ignore
-            self.head = node  # type: ignore
+            if rest != 0:
+                return False
 
-        self.size += 1
-
-        if self.size > self.capacity:
-            del self.map[self.tail.key]  # type: ignore
-
-            self.tail = self.tail.next  # type: ignore
-            self.tail.prev = None  # type: ignore
-            self.size -= 1
-
-    def update_list(self, key):
-        node = self.map[key]
-
-        if self.head == node:
-            return
-
-        if self.tail == node:
-            self.tail = node.next
-            self.tail.prev = None
-        else:
-            node.prev.next = node.next
-            node.next.prev = node.prev
-
-        self.head.next = node
-        node.next = None
-        node.prev = self.head
-        self.head = node
-
-
-# Your LRUCache object will be instantiated and called as such:
-# obj = LRUCache(capacity)
-# param_1 = obj.get(key)
-# obj.put(key,value)
+        return True
 
 
 solution = Solution()
 
 
 test(
-    solution.permute,
+    solution.lemonadeChange,
     [
         {
-            "input": [[1, 2, 3]],
-            "expected": [
-                [1, 2, 3],
-                [1, 3, 2],
-                [2, 1, 3],
-                [2, 3, 1],
-                [3, 1, 2],
-                [3, 2, 1],
-            ],
+            "input": [[5, 5, 5, 10, 20]],
+            "expected": True,
         },
         {
-            "input": [[0, 1]],
-            "expected": [
-                [0, 1],
-                [1, 0],
-            ],
-        },
-        {
-            "input": [[1]],
-            "expected": [[1]],
+            "input": [[5, 5, 10, 10, 20]],
+            "expected": False,
         },
     ],
 )
