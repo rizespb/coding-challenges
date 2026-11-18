@@ -1,120 +1,103 @@
 const { test } = require('./test');
 
-class Node {
-  constructor(key, value, prev = null, next = null) {
-    this.key = key;
-    this.value = value;
-    this.prev = prev;
-    this.next = next;
+// const findWinners = (matches) => {
+//   const players = new Map();
+
+//   for (const [win, lost] of matches) {
+//     if (!players.has(win)) {
+//       players.set(win, {
+//         win: 0,
+//         lost: 0,
+//       });
+//     }
+
+//     if (!players.has(lost)) {
+//       players.set(lost, {
+//         win: 0,
+//         lost: 0,
+//       });
+//     }
+
+//     players.get(win).win++;
+//     players.get(lost).lost++;
+//   }
+
+//   const all_win = [];
+//   const one_lost = [];
+
+//   for (const player of players.keys()) {
+//     const { lost } = players.get(player);
+
+//     if (lost === 0) all_win.push(player);
+//     if (lost === 1) one_lost.push(player);
+//   }
+
+//   return [all_win.sort((a, b) => a - b), one_lost.sort((a, b) => a - b)];
+// };
+
+const findWinners = (matches) => {
+  const all_win = new Set();
+  const one_lost = new Set();
+  const rest = new Set();
+
+  for (const [win, lost] of matches) {
+    const isWinInOneLost = one_lost.has(win);
+    const isWinInRest = rest.has(win);
+
+    const isLostInAllWin = all_win.has(lost);
+    const isLostInOneLost = one_lost.has(lost);
+    const isLostInRest = rest.has(lost);
+
+    if (!isWinInOneLost && !isWinInRest) {
+      all_win.add(win);
+    }
+
+    if (isLostInAllWin) {
+      all_win.delete(lost);
+      one_lost.add(lost);
+    } else if (isLostInOneLost) {
+      one_lost.delete(lost);
+      rest.add(lost);
+    } else if (!isLostInRest) {
+      one_lost.add(lost);
+    }
   }
-}
-class LRUCache {
-  constructor(capacity) {
-    this.capacity = capacity;
-    this.map = {};
-    this.size = 0;
-    this.tail = null;
-    this.head = null;
-  }
 
-  get = (key) => {
-    if (!(key in this.map)) return -1;
-
-    this.updateList(key);
-
-    return this.map[key].value;
-  };
-
-  put = (key, value) => {
-    if (key in this.map) {
-      this.map[key].value = value;
-      this.updateList(key);
-
-      return;
-    }
-
-    this.size++;
-
-    const node = new Node(key, value);
-    this.map[key] = node;
-
-    if (!this.tail) {
-      this.tail = node;
-      this.head = node;
-    } else {
-      this.head.next = node;
-      node.prev = this.head;
-      this.head = node;
-    }
-
-    if (this.size > this.capacity) {
-      delete this.map[this.tail.key];
-
-      this.tail = this.tail.next;
-      this.tail.prev = null;
-      this.size--;
-    }
-  };
-
-  updateList = (key) => {
-    const node = this.map[key];
-
-    if (this.size === 1 || this.head === node) return;
-
-    if (this.tail === node) {
-      this.tail = node.next;
-      this.tail.prev = null;
-    } else {
-      node.prev.next = node.next;
-      node.next.prev = node.prev;
-    }
-
-    this.head.next = node;
-    node.prev = this.head;
-    this.head = node;
-    this.head.next = null;
-  };
-}
-
-const print = (cache) => {
-  console.log('/////////////////////////////');
-  console.log('tail', cache.tail);
-  console.log('head', cache.head);
-  console.log('map', cache.map);
+  return [[...all_win].sort((a, b) => a - b), [...one_lost].sort((a, b) => a - b)];
 };
 
-const cache = new LRUCache(2);
-cache.put(1, 1);
-console.log(cache.map);
-cache.put(2, 2);
-// print(cache);
-console.log(cache.put(3, 3));
-console.log(cache.get(1));
-console.log(cache.get(2));
-console.log(cache.put(3, 333));
-print(cache);
-
-// test(permute, [
-//   {
-//     input: [[1, 2, 3]],
-//     expected: [
-//       [1, 2, 3],
-//       [1, 3, 2],
-//       [2, 1, 3],
-//       [2, 3, 1],
-//       [3, 1, 2],
-//       [3, 2, 1],
-//     ],
-//   },
-//   {
-//     input: [[0, 1]],
-//     expected: [
-//       [0, 1],
-//       [1, 0],
-//     ],
-//   },
-//   {
-//     input: [[1]],
-//     expected: [[1]],
-//   },
-// ]);
+test(findWinners, [
+  {
+    input: [
+      [
+        [1, 3],
+        [2, 3],
+        [3, 6],
+        [5, 6],
+        [5, 7],
+        [4, 5],
+        [4, 8],
+        [4, 9],
+        [10, 4],
+        [10, 9],
+      ],
+    ],
+    expected: [
+      [
+        [1, 2, 10],
+        [4, 5, 7, 8],
+      ],
+    ],
+  },
+  {
+    input: [
+      [
+        [2, 3],
+        [1, 3],
+        [5, 4],
+        [6, 4],
+      ],
+    ],
+    expected: [[1, 2, 5, 6], []],
+  },
+]);

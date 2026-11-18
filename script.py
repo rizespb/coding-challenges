@@ -1,58 +1,78 @@
 from test import test
+from collections import deque
+
+# # https://leetcode.com/problems/sliding-window-maximum/description/
+# class MonotonicQueue:
+#     def __init__(self):
+#         self.queue = deque()
+
+#     def popLeft(self):
+#         return self.queue.popleft()
+
+#     def append(self, index: int, nums: list[int]) -> None:
+#         while self.queue and nums[self.queue[-1]] <= nums[index]:
+#             self.queue.pop()
+#         self.queue.append(index)
+
+#     def get_max_index(
+#         self,
+#     ) -> int:
+#         return self.queue[0]
 
 
-# Жадный алгоритм: стараемся избавиться в первую очередь от наиболее крупных купюр
-# Покупатели расплачиваются только 5, 10 и 20
-# 20 никогда не будет участвовать в сдаче, поэтому не храним
+# class Solution:
+#     def maxSlidingWindow(self, nums: list[int], k: int) -> list[int]:
+#         result: list[int] = []
+#         left = 0
+#         right = 0
+#         queue = MonotonicQueue()
+#         while right < len(nums):
+#             queue.append(right, nums)
+#             if right < k - 1:
+#                 right += 1
+#                 continue
+#             result.append(nums[queue.get_max_index()])
+#             right += 1
+#             if left == queue.get_max_index():
+#                 queue.popLeft()
+#             left += 1
+#         return result
+
+
 class Solution:
+    def maximumUnits(self, boxTypes: list[list[int]], truckSize: int) -> int:
+        boxTypes.sort(key=lambda box: box[1], reverse=True)
 
-    def lemonadeChange(self, bills: list[int]) -> bool:
-        bank: dict[int, int] = {10: 0, 5: 0}
+        rest_boxes_size = truckSize
 
-        price = 5
+        total_units = 0
 
-        for banknote in bills:
-            if banknote != 20:
-                bank[banknote] += 1
+        index = 0
+        while rest_boxes_size > 0:
+            box = boxTypes[index]
 
-            if banknote == price:
-                continue
+            box_amount = min(rest_boxes_size, box[0])
 
-            rest = banknote - price
+            total_units += box_amount * box[1]
+            rest_boxes_size -= box_amount
+            index += 1
 
-            for key, value in bank.items():
-
-                target_number_of_banknotes = min(rest // key, value)
-
-                if target_number_of_banknotes == 0:
-                    continue
-
-                rest -= key * target_number_of_banknotes
-
-                bank[key] -= target_number_of_banknotes
-
-                if rest == 0:
-                    break
-
-            if rest != 0:
-                return False
-
-        return True
+        return total_units
 
 
 solution = Solution()
 
 
 test(
-    solution.lemonadeChange,
+    solution.maximumUnits,
     [
         {
-            "input": [[5, 5, 5, 10, 20]],
-            "expected": True,
+            "input": [[[1, 3], [2, 2], [3, 1]], 4],
+            "expected": 8,
         },
         {
-            "input": [[5, 5, 10, 10, 20]],
-            "expected": False,
+            "input": [[[5, 10], [2, 5], [4, 7], [3, 9]], 10],
+            "expected": 91,
         },
     ],
 )
