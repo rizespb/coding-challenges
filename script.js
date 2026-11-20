@@ -1,103 +1,39 @@
 const { test } = require('./test');
 
-// const findWinners = (matches) => {
-//   const players = new Map();
+const maxSlidingWindow = (nums, k) => {
+  const result = [];
 
-//   for (const [win, lost] of matches) {
-//     if (!players.has(win)) {
-//       players.set(win, {
-//         win: 0,
-//         lost: 0,
-//       });
-//     }
+  const queue = [];
+  let head = 0;
 
-//     if (!players.has(lost)) {
-//       players.set(lost, {
-//         win: 0,
-//         lost: 0,
-//       });
-//     }
-
-//     players.get(win).win++;
-//     players.get(lost).lost++;
-//   }
-
-//   const all_win = [];
-//   const one_lost = [];
-
-//   for (const player of players.keys()) {
-//     const { lost } = players.get(player);
-
-//     if (lost === 0) all_win.push(player);
-//     if (lost === 1) one_lost.push(player);
-//   }
-
-//   return [all_win.sort((a, b) => a - b), one_lost.sort((a, b) => a - b)];
-// };
-
-const findWinners = (matches) => {
-  const all_win = new Set();
-  const one_lost = new Set();
-  const rest = new Set();
-
-  for (const [win, lost] of matches) {
-    const isWinInOneLost = one_lost.has(win);
-    const isWinInRest = rest.has(win);
-
-    const isLostInAllWin = all_win.has(lost);
-    const isLostInOneLost = one_lost.has(lost);
-    const isLostInRest = rest.has(lost);
-
-    if (!isWinInOneLost && !isWinInRest) {
-      all_win.add(win);
+  for (let index = 0; index < nums.length; index++) {
+    while (queue.length > head && nums[index] > nums[queue.at(-1)]) {
+      queue.pop();
     }
 
-    if (isLostInAllWin) {
-      all_win.delete(lost);
-      one_lost.add(lost);
-    } else if (isLostInOneLost) {
-      one_lost.delete(lost);
-      rest.add(lost);
-    } else if (!isLostInRest) {
-      one_lost.add(lost);
+    queue.push(index);
+
+    if (index < k - 1) {
+      continue;
+    }
+
+    result.push(nums[queue[head]]);
+
+    if (queue[head] <= index - k + 1) {
+      head++;
     }
   }
 
-  return [[...all_win].sort((a, b) => a - b), [...one_lost].sort((a, b) => a - b)];
+  return result;
 };
 
-test(findWinners, [
+test(maxSlidingWindow, [
   {
-    input: [
-      [
-        [1, 3],
-        [2, 3],
-        [3, 6],
-        [5, 6],
-        [5, 7],
-        [4, 5],
-        [4, 8],
-        [4, 9],
-        [10, 4],
-        [10, 9],
-      ],
-    ],
-    expected: [
-      [
-        [1, 2, 10],
-        [4, 5, 7, 8],
-      ],
-    ],
+    input: [[1, 3, -1, -3, 5, 3, 6, 7], 3],
+    expected: [3, 3, 5, 5, 6, 7].toString(),
   },
   {
-    input: [
-      [
-        [2, 3],
-        [1, 3],
-        [5, 4],
-        [6, 4],
-      ],
-    ],
-    expected: [[1, 2, 5, 6], []],
+    input: [[1], 1],
+    expected: [1].toString(),
   },
 ]);
